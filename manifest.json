@@ -24,8 +24,7 @@
          "16": "img/ts-16.png",
          "32": "img/ts-32.png",
          "48": "img/ts-48.png"
-      },
-      "default_popup": "settings.html"
+      }
    },
    "permissions": [ "storage", "declarativeContent" ],
    "update_url": "https://clients2.google.com/service/update2/crx",

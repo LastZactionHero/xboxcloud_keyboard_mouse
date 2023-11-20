@@ -4,6 +4,7 @@ function main() {
 		config = e.detail;
 		setupTS();
 	}, false);
+
 	const setupTS = function () {
 		const startTime = Date.now();
 		let pointerLocked = false;
