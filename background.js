@@ -3,9 +3,6 @@ chrome.runtime.onInstalled.addListener(function() {
         chrome.declarativeContent.onPageChanged.addRules([{
             conditions: [
                 new chrome.declarativeContent.PageStateMatcher({
-                    pageUrl: {hostEquals: "stadia.google.com"},
-                }),
-                new chrome.declarativeContent.PageStateMatcher({
                     pageUrl: {hostEquals: "html5gamepad.com"},
                 }),
                 new chrome.declarativeContent.PageStateMatcher({
@@ -28,7 +25,6 @@ chrome.runtime.onInstalled.addListener(function() {
         "opacity": 255,
         "enableColors": false,
         "enableDrawSticks" : false,
-        "disableTouchStadia": false,
         "buttonConfig": null,
         "firstRun": true
     };
@@ -42,7 +38,6 @@ chrome.runtime.onInstalled.addListener(function() {
         "opacity",
         "enableColors",
         "enableDrawSticks",
-        "disableTouchStadia",
         "buttonConfig",
         "firstRun"
     ], function(settings) {
@@ -50,7 +45,6 @@ chrome.runtime.onInstalled.addListener(function() {
             startParams[key] = settings[key];
         }
         chrome.storage.sync.set(startParams, function() {
-            console.log("TouchStadia: Set start params!");
         });
     });
 });
