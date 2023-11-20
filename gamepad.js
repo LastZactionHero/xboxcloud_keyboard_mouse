@@ -16,41 +16,99 @@ function main() {
 			timestamp: 0,
 			mapping: "standard",
 			axes: [0, 0, 0, 0],
+			left_stick: [
+				{
+					keys: ['w']
+				},
+				{
+					keys: ['a']
+				},
+				{
+					keys: ['s']
+				},
+				{
+					keys: ['d']
+				}
+			],
 			buttons: [
 				// 0: A
-				{},
+				{
+					// Activate
+					keys: ['e'],
+				},
 				// 1: B
-				{},
+				{
+					// Sneak, Back
+					keys: ['c', 'Escape', 'b']
+				},
 				// 2: X
-				{},
+				{
+					// Reload
+					keys: ['r', 'x']
+				},
 				// 3: Y
-				{},
+				{
+					// Jump
+					keys: [' ', 'y']
+				},
 				// 4: L1
-				{},
+				{
+					// Flashlight | Scanner
+					keys: ['Tab']
+				},
 				// 5: R1
-				{},
+				{
+					// Grenade
+					keys: ['p']
+				},
 				// 6: L2
-				{},
+				{
+					// Aim
+					mouseButton: [2 /* right */]
+				},
 				// 7: R2
-				{},
+				{
+					// Fire
+					mouseButton: [0 /* left */]
+				},
 				// 8: Select
-				{},
+				{
+					keys: ['\\']
+				},
 				// 9: Start
-				{},
+				{
+					keys: ['Enter']
+				},
 				// 10: L3
-				{},
+				{
+					// Run
+					keys: ['Shift']
+				},
 				// 11: R3,
-				{},
+				{
+					// Bash
+					mouseButton: [1 /* middle */]
+				},
 				// 12: Dpad Up
-				{},
+				{
+					keys: ['i']
+				},
 				// 13: Dpad Down
-				{},
+				{
+					keys: ['k']
+				},
 				// 14: Dpad Left
-				{},
+				{
+					keys: ['j']
+				},
 				// 15: Dpad Right
-				{},
+				{
+					keys: ['l']
+				},
 				// 16: Home
-				{}]
+				{
+					keys: ['h']
+				}]
 		};
 
 		for (let i = 0; i < emulatedGamepad.buttons.length; i++) {
@@ -108,12 +166,11 @@ function main() {
 		}
 
 
-		
+
 		const loadEventHandlers = function (emulatedGamepad) {
 			console.log('loadEventHandlers');
 
 			document.addEventListener('mousemove', function (event) {
-				// console.log("Mouse movements: X=" + event.movementX + ", Y=" + event.movementY);
 				appendMouseMovementHistory(event);
 				let movement = smoothMouseMovementHistory();
 
@@ -135,122 +192,103 @@ function main() {
 				}
 			});
 
-
-			// 2	X			Reload					r
-			// 3	Y			Jump					space
-			// 4	L1			Flashlight/Scanner		tab
-			// 5	R1			Grenade					p
-			// 6	L2			Aim						right mouse down
-			// 7	R2			Fire					left mouse down
-			// 8	Select								enter
-			// 9	Start								\
-			// 10	L3			Sprint					shift
-			// 11	R3			Bash					middle mouse click
-			// 12	Up									i
-			// 13	Down								k
-			// 14	Left								j
-			// 15 	Right								l
 			document.addEventListener('mousedown', function (event) {
-				// 6	L2			Aim						right mouse down
-				if (event.button == 0) { pressButton(7, true) }
-				// 7	R2			Fire					left mouse down
-				if (event.button === 1) { pressButton(11, true) }
-				// 11	R3			Bash					middle mouse click
-				if (event.button === 2) { pressButton(6, true) }
+				for (let buttonIdx = 0; buttonIdx < emulatedGamepad.buttons.length; buttonIdx++) {
+					const button = emulatedGamepad.buttons[buttonIdx];
+					if (typeof button.mouseButton === "undefined") {
+						continue;
+					}
+
+					for (let keyIdx = 0; keyIdx < button.mouseButton.length; keyIdx++) {
+						if (event.button === button.mouseButton[keyIdx]) {
+							pressButton(buttonIdx, true);
+						}
+					}
+				}
 			});
 			document.addEventListener('mouseup', function (event) {
-				// 6	L2			Aim						right mouse down
-				if (event.button == 0) { pressButton(7, false) }
-				// 7	R2			Fire					left mouse down
-				if (event.button === 1) { pressButton(11, false) }
-				// 11	R3			Bash					middle mouse click
-				if (event.button === 2) { pressButton(6, false) }
-			});
+				for (let buttonIdx = 0; buttonIdx < emulatedGamepad.buttons.length; buttonIdx++) {
+					const button = emulatedGamepad.buttons[buttonIdx];
+					if (typeof button.mouseButton === "undefined") {
+						continue;
+					}
 
+					for (let keyIdx = 0; keyIdx < button.mouseButton.length; keyIdx++) {
+						if (event.button === button.mouseButton[keyIdx]) {
+							pressButton(buttonIdx, false);
+						}
+					}
+				}
+			});
 			document.addEventListener('keydown', function (event) {
-				// 0	A			Activate				e
-				if (event.key === 'e') { pressButton(0, true); }
-				// 1	B			Sneak					c
-				if (event.key === 'c') { pressButton(1, true); }
-				// Alternate B: Escape
-				if (event.key === 'Escape') { pressButton(1, true); }
-				// Alternate B: B
-				if (event.key === 'b') { pressButton(1, true); }
-				// 2	X			Reload					r
-				if (event.key === 'r') { pressButton(2, true); }
-				// Alternate X: X
-				if (event.key === 'x') { pressButton(2, true); }
-				// 3	Y			Jump					space
-				if (event.key === ' ') { pressButton(3, true); }
-				// Alternate Y: Y
-				if (event.key === 'y') { pressButton(3, true); }
-				// 4	L1			Flashlight/Scanner		tab
-				if (event.key === 'Tab') { pressButton(4, true); }
-				// 5	R1			Grenade					p
-				if (event.key === 'p') { pressButton(5, true); }
+				for (let buttonIdx = 0; buttonIdx < emulatedGamepad.buttons.length; buttonIdx++) {
+					const button = emulatedGamepad.buttons[buttonIdx];
+					if (typeof button.keys === "undefined") {
+						continue;
+					}
 
-				// 8	Select								enter
-				if (event.key === 'Enter') { pressButton(8, true); }
-				// 9	Start								\
-				if (event.key === '\\') { pressButton(9, true); }
-				// 10	L3			Sprint					shift
-				if (event.shiftKey) { pressButton(10, true); }
-				// 12	Up									i
-				if (event.key == 'i') { pressButton(12, true); }
-				// 13	Down								k
-				if (event.key == 'k') { pressButton(13, true); }
-				// 14	Left								j
-				if (event.key == 'j') { pressButton(14, true); }
-				// 15 	Right								l
-				if (event.key == 'l') { pressButton(15, true); }
-				if (event.key === 'w') { setAxis(1, -1); }
-				if (event.key === 'a') { setAxis(0, -1); }
-				if (event.key === 's') { setAxis(1, 1); }
-				if (event.key === 'd') { setAxis(0, 1); }
+					for (let keyIdx = 0; keyIdx < button.keys.length; keyIdx++) {
+						if (event.key === button.keys[keyIdx]) {
+							pressButton(buttonIdx, true);
+						}
+					}
+				}
+				
+				for (let leftStickIdx = 0; leftStickIdx < 4; leftStickIdx++) {
+					for (let leftStickButtonIdx = 0; leftStickButtonIdx < emulatedGamepad.left_stick[leftStickIdx].keys.length; leftStickButtonIdx++) {
+						if (event.key === emulatedGamepad.left_stick[leftStickIdx].keys[leftStickButtonIdx]) {
+							switch(leftStickIdx) {
+								case 0: // w
+									setAxis(1, -1);
+									break;
+								case 1: // a
+									setAxis(0, -1);
+									break;
+								case 2: // s
+									setAxis(1, 1);
+									break;
+								case 3: // d
+									setAxis(0, 1);
+									break;
+							}
+						}
+					}
+				}
 			});
-
 			document.addEventListener('keyup', function (event) {
-				// 0	A			Activate				e
-				if (event.key === 'e') { pressButton(0, false); }
-				// 1	B			Sneak					c
-				if (event.key === 'c') { pressButton(1, false); }
-				// Alternate B: Escape
-				if (event.key === 'Escape') { pressButton(1, false); }
-				// Alternate B: B
-				if (event.key === 'b') { pressButton(1, false); }
-				// 2	X			Reload					r
-				if (event.key === 'r') { pressButton(2, false); }
-				// Alternate X: X
-				if (event.key === 'x') { pressButton(2, false); }
-				// 3	Y			Jump					space
-				if (event.key === ' ') { pressButton(3, false); }
-				// Alternate Y: Y
-				if (event.key === 'y') { pressButton(3, false); }
-				// 4	L1			Flashlight/Scanner		tab
-				if (event.key === 'Tab') { pressButton(4, false); }
-				// 5	R1			Grenade					p
-				if (event.key === 'p') { pressButton(5, false); }
-				// 6	L2			Aim						right mouse down
-				// 7	R2			Fire					left mouse down
-				// 8	Select								enter
-				if (event.key === 'Enter') { pressButton(8, false); }
-				// 9	Start								\
-				if (event.key === '\\') { pressButton(9, false); }
-				// 10	L3			Sprint					shift
-				if (event.key == 'z') { pressButton(10, false); }
-				// 11	R3			Bash					middle mouse click
-				// 12	Up									i
-				if (event.key == 'i') { pressButton(12, false); }
-				// 13	Down								k
-				if (event.key == 'k') { pressButton(13, false); }
-				// 14	Left								j
-				if (event.key == 'j') { pressButton(14, false); }
-				// 15 	Right								l
-				if (event.key == 'l') { pressButton(15, false); }
-				if (event.key === 'w') { setAxis(1, 0); }
-				if (event.key === 'a') { setAxis(0, 0); }
-				if (event.key === 's') { setAxis(1, 0); }
-				if (event.key === 'd') { setAxis(0, 0); }
+				for (let buttonIdx = 0; buttonIdx < emulatedGamepad.buttons.length; buttonIdx++) {
+					const button = emulatedGamepad.buttons[buttonIdx];
+					if (typeof button.keys === "undefined") {
+						continue;
+					}
+
+					for (let keyIdx = 0; keyIdx < button.keys.length; keyIdx++) {
+						if (event.key === button.keys[keyIdx]) {
+							pressButton(buttonIdx, false);
+						}
+					}
+				}
+
+				for (let leftStickIdx = 0; leftStickIdx < 4; leftStickIdx++) {
+					for (let leftStickButtonIdx = 0; leftStickButtonIdx < emulatedGamepad.left_stick[leftStickIdx].keys.length; leftStickButtonIdx++) {
+						if (event.key === emulatedGamepad.left_stick[leftStickIdx].keys[leftStickButtonIdx]) {
+							switch(leftStickIdx) {
+								case 0: // w
+									setAxis(1, 0);
+									break;
+								case 1: // a
+									setAxis(0, 0);
+									break;
+								case 2: // s
+									setAxis(1, 0);
+									break;
+								case 3: // d
+									setAxis(0, 0);
+									break;
+							}
+						}
+					}
+				}
 			});
 		}
 
