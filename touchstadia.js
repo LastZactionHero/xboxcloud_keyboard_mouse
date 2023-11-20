@@ -9,7 +9,6 @@ function main() {
 
 		const touchStadiaElem = document.createElement("span");
 		const canvasElem = document.createElement("canvas");
-		const canvasCtx = canvasElem.getContext("2d");
 
 		const startTime = Date.now();
 
@@ -17,28 +16,8 @@ function main() {
 
 		const imgExt = ".svg";
 
-		let layoutMode = false;
 		let forceTSVisible = false;
 
-		let buttonInTransit = -1;
-
-		const stickLColor = "#82b4ff";
-		let stickLActive = false;
-		let stickLStartX = 0;
-		let stickLStartY = 0;
-		let stickLEndX = 0;
-		let stickLEndY = 0;
-		let stickLDeltaX = 0;
-		let stickLDeltaY = 0;
-
-		const stickRColor = "#ff8a82";
-		let stickRActive = false;
-		let stickRStartX = 0;
-		let stickRStartY = 0;
-		let stickREndX = 0;
-		let stickREndY = 0;
-		let stickRDeltaX = 0;
-		let stickRDeltaY = 0;
 
 		const emulatedGamepad = {
 			id: "TouchStadia emulated gamepad",
@@ -218,76 +197,11 @@ function main() {
 		canvasElem.height = window.innerHeight;
 		touchStadiaElem.style.display = "none";
 
-		const handleStickTouch = function (touchEvent, type) {
-			const touches = type === 2 ? touchEvent.changedTouches : touchEvent.touches;
-			for (let i = 0; i < touches.length; i++) {
-				if (touches[i].target !== canvasElem) continue;
-				const clientX = touches[i].clientX;
-				const clientY = touches[i].clientY;
-				const stickIndex = clientX > window.innerWidth / 2 ? 1 : 0;
-				if (stickIndex) { //R
-					switch (type) {
-						case 0:
-							if (stickRActive) break;
-							stickRActive = true;
-							stickRStartX = stickREndX = clientX;
-							stickRStartY = stickREndY = clientY;
-							break;
-						case 1:
-							stickREndX = clientX;
-							stickREndY = clientY;
-							break;
-						case 2:
-							stickRActive = false;
-							stickRStartX = stickREndX = 0;
-							stickRStartY = stickREndY = 0;
-							break;
-					}
-					const angle = Math.atan2(stickRStartY - stickREndY, stickRStartX - stickREndX) + Math.PI;
-					let distance = Math.sqrt(
-						(stickRStartX - stickREndX) * (stickRStartX - stickREndX) +
-						(stickRStartY - stickREndY) * (stickRStartY - stickREndY)
-					);
-					if (distance > config.stickRadius) distance = config.stickRadius;
-					stickRDeltaX = distance * Math.cos(angle);
-					stickRDeltaY = distance * Math.sin(angle);
-
-					setAxis(2, stickRDeltaX / config.stickRadius);
-					setAxis(3, stickRDeltaY / config.stickRadius);
-				} else { //L
-					switch (type) {
-						case 0:
-							if (stickLActive) break;
-							stickLActive = true;
-							stickLStartX = stickLEndX = clientX;
-							stickLStartY = stickLEndY = clientY;
-							break;
-						case 1:
-							stickLEndX = clientX;
-							stickLEndY = clientY;
-							break;
-						case 2:
-							stickLActive = false;
-							stickLStartX = stickLEndX = 0;
-							stickLStartY = stickLEndY = 0;
-							break;
-					}
-					const angle = Math.atan2(stickLStartY - stickLEndY, stickLStartX - stickLEndX) + Math.PI;
-					let distance = Math.sqrt(
-						(stickLStartX - stickLEndX) * (stickLStartX - stickLEndX) +
-						(stickLStartY - stickLEndY) * (stickLStartY - stickLEndY)
-					);
-					if (distance > config.stickRadius) distance = config.stickRadius;
-					stickLDeltaX = distance * Math.cos(angle);
-					stickLDeltaY = distance * Math.sin(angle);
-
-					setAxis(0, stickLDeltaX / config.stickRadius);
-					setAxis(1, stickLDeltaY / config.stickRadius);
-				}
-			}
-		}
-
 		const pressButton = function (buttonID, isPressed) {
+			if(!pointerLocked) {
+				return;
+			}
+
 			emulatedGamepad.buttons[buttonID].pressed = isPressed;
 			emulatedGamepad.buttons[buttonID].touched = isPressed;
 			emulatedGamepad.buttons[buttonID].value = isPressed ? 1 : 0;
@@ -300,6 +214,10 @@ function main() {
 		}
 
 		const setAxis = function (axis, value) {
+			if(!pointerLocked) {
+				return;
+			}
+
 			emulatedGamepad.axes[axis] = value;
 			emulatedGamepad.timestamp = Date.now() - startTime;
 		}
@@ -319,24 +237,59 @@ function main() {
 			blacklist = await blacklistResp.json();
 		}
 
+		const MOUSE_MOVE_HISTORY_MAX = 2;
+		let mouseMoveHistory = [];
+		const appendMouseMovementHistory = function(event) {
+			if(event.movementX == 0 && event.movementY == 0) {
+				mouseMoveHistory = [];
+			} else {
+				mouseMoveHistory.unshift({x: event.movementX, y: event.movementY});
+				mouseMoveHistory = mouseMoveHistory.slice(0, MOUSE_MOVE_HISTORY_MAX);
+			}
+		}
+
+		const smoothMouseMovementHistory = function() {
+			if (mouseMoveHistory.length == 0) {
+				return {x: 0, y: 0};
+			}
+
+			let accumulateX = 0;
+			let accumulateY = 0;
+			for(let i = 0; i < mouseMoveHistory.length; i++) {
+				accumulateX += mouseMoveHistory[i].x;
+				accumulateY += mouseMoveHistory[i].y;
+			}
+
+			const smoothX = accumulateX / mouseMoveHistory.length;
+			const smoothY = accumulateY / mouseMoveHistory.length;
+
+			return { x: smoothX, y: smoothY };
+		}
+		
+
+		let pointerLocked = false;
 		const loadEventHandlers = function (emulatedGamepad) {
 			console.log('loadEventHandlers');
 
 			document.addEventListener('mousemove', function (event) {
-				console.log("Mouse movements: X=" + event.movementX + ", Y=" + event.movementY);
-				const movementY = event.movementY;
-				const movementX = event.movementX;
+				// console.log("Mouse movements: X=" + event.movementX + ", Y=" + event.movementY);
+				appendMouseMovementHistory(event);
+				let movement = smoothMouseMovementHistory();
 
-				setAxis(2, movementX / 50);
-				setAxis(3, movementY / 50);
+				let axisX = Math.min(1.0, movement.x / 30)
+				let axisY = Math.min(1.0, movement.y / 30)
+				setAxis(2, axisX);
+				setAxis(3, axisY);
 			});
 
 			document.addEventListener('keyup', function (event) {
 				if (event.key == ']') {
 					if (document.pointerLockElement === document.body) {
 						document.exitPointerLock();
+						pointerLocked = false;
 					} else {
 						document.body.requestPointerLock();
+						pointerLocked = true;
 					}
 				}
 			});
