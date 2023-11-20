@@ -1,0 +1,34 @@
+{
+   "background": {
+      "persistent": false,
+      "scripts": [ "background.js" ]
+   },
+   "content_scripts": [ {
+      "js": [ "touchstadia.js" ],
+      "matches": [ "https://stadia.google.com/*", "https://html5gamepad.com/*", "https://hardwaretester.com/*", "https://www.xbox.com/*" ],
+      "run_at": "document_start"
+   } ],
+   "description": "TouchStadia is a Chrome Extension which adds on-screen joystick control to Stadia for touchscreen devices!",
+   "icons": {
+      "128": "img/ts-128.png",
+      "16": "img/ts-16.png",
+      "32": "img/ts-32.png",
+      "48": "img/ts-48.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqXHrZRONEo94SCYrek6oTqVFzUagrXPPJu0TOmPFkCv6feYwwMy2c5n2/y2gwhTJnp5DHnQ0gR1YizCO4C5DzEY9yWVW6dHtSI/pufIDtzXVVP4Dsi9RhCfhahj2tf+nM6P4095nhH8xTJ/qgyrYzab4UYXqYNz+Qcgz8Yxxqshh2Y9uqjDI5tWIvMs2UM6pMOkdaiBce18kFYCDI1FWaL5GPPnHjOkxeFBStdWO0U9ttKf/j5udmt9gACpL7J8crmayaeOESZqmRkQWM87qJBh0/CM7FzZDxoK0RIcG/0lpswdzuPSZ1x8aTlemXOJRbuttG84XF4WfMv/b+GHZqQIDAQAB",
+   "manifest_version": 2,
+   "name": "TouchStadia",
+   "page_action": {
+      "default_icon": {
+         "128": "img/ts-128.png",
+         "16": "img/ts-16.png",
+         "32": "img/ts-32.png",
+         "48": "img/ts-48.png"
+      },
+      "default_popup": "settings.html"
+   },
+   "permissions": [ "storage", "declarativeContent" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "0.0.25",
+   "web_accessible_resources": [ "img/controls/*.svg", "res/*.json" ]
+}
