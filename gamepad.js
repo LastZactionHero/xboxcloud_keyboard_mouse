@@ -130,11 +130,20 @@ function main() {
 			if (!pointerLocked) {
 				return;
 			}
-
 			emulatedGamepad.axes[axis] = value;
 			emulatedGamepad.timestamp = Date.now() - startTime;
 		}
 
+
+		function normalizeMovement(movement) {
+			if(movement == 0) {
+				return 0;
+			}
+
+			let result = Math.log2(Math.abs(movement)) / 6.8 + 0.1;
+			let normalized =  movement < 0 ? -result : result;
+			return normalized;
+		}
 
 		const MOUSE_MOVE_HISTORY_MAX = 2;
 		let mouseMoveHistory = [];
@@ -142,7 +151,7 @@ function main() {
 			if (event.movementX == 0 && event.movementY == 0) {
 				mouseMoveHistory = [];
 			} else {
-				mouseMoveHistory.unshift({ x: event.movementX, y: event.movementY });
+				mouseMoveHistory.unshift({ x: normalizeMovement(event.movementX), y: normalizeMovement(event.movementY) });
 				mouseMoveHistory = mouseMoveHistory.slice(0, MOUSE_MOVE_HISTORY_MAX);
 			}
 		}
@@ -166,18 +175,26 @@ function main() {
 		}
 
 
+		let resetMotionTimeoutId = null;
 
 		const loadEventHandlers = function (emulatedGamepad) {
-			console.log('loadEventHandlers');
-
 			document.addEventListener('mousemove', function (event) {
 				appendMouseMovementHistory(event);
 				let movement = smoothMouseMovementHistory();
 
-				let axisX = Math.min(1.0, movement.x / 30)
-				let axisY = Math.min(1.0, movement.y / 30)
+				let axisX = movement.x;
+				let axisY = movement.y;
 				setAxis(2, axisX);
 				setAxis(3, axisY);
+				
+				if(resetMotionTimeoutId != null) {
+					clearTimeout(resetMotionTimeoutId);
+				}
+				resetMotionTimeoutId = setTimeout(function() {
+					console.log("cleared it!");
+					setAxis(2, 0);
+					setAxis(3, 0);
+				}, 100);
 			});
 
 			document.addEventListener('keyup', function (event) {
@@ -186,7 +203,7 @@ function main() {
 						document.exitPointerLock();
 						pointerLocked = false;
 					} else {
-						document.body.requestPointerLock();
+						document.body.requestPointerLock({ unadjustedMovement: true });
 						pointerLocked = true;
 					}
 				}
@@ -233,11 +250,11 @@ function main() {
 						}
 					}
 				}
-				
+
 				for (let leftStickIdx = 0; leftStickIdx < 4; leftStickIdx++) {
 					for (let leftStickButtonIdx = 0; leftStickButtonIdx < emulatedGamepad.left_stick[leftStickIdx].keys.length; leftStickButtonIdx++) {
 						if (event.key === emulatedGamepad.left_stick[leftStickIdx].keys[leftStickButtonIdx]) {
-							switch(leftStickIdx) {
+							switch (leftStickIdx) {
 								case 0: // w
 									setAxis(1, -1);
 									break;
@@ -272,7 +289,7 @@ function main() {
 				for (let leftStickIdx = 0; leftStickIdx < 4; leftStickIdx++) {
 					for (let leftStickButtonIdx = 0; leftStickButtonIdx < emulatedGamepad.left_stick[leftStickIdx].keys.length; leftStickButtonIdx++) {
 						if (event.key === emulatedGamepad.left_stick[leftStickIdx].keys[leftStickButtonIdx]) {
-							switch(leftStickIdx) {
+							switch (leftStickIdx) {
 								case 0: // w
 									setAxis(1, 0);
 									break;
