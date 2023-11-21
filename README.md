@@ -22,8 +22,8 @@ It's hard configured for Starfield- update the button map in `emulatedGamepad` t
 | C, Escape, B        | B                 | Sneak, Back                        |
 | R, X                | X                 | Reload                             |
 | Space, Y            | Y                 | Jump                               |
-| Tab                 | L1                | Flashlight/Scanner                 |
-| P                   | R1                | Grenade                            |
+| 1                   | L1                | Flashlight/Scanner                 |
+| P, 0                | R1                | Grenade                            |
 | Right Mouse Button  | L2                | Aim                                |
 | Left Mouse Button   | R2                | Fire                               |
 | Shift               | L3                | Run                                |

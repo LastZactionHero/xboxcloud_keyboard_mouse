@@ -54,12 +54,12 @@ function main() {
 				// 4: L1
 				{
 					// Flashlight | Scanner
-					keys: ['Tab']
+					keys: ['1']
 				},
 				// 5: R1
 				{
 					// Grenade
-					keys: ['p']
+					keys: ['p', '0']
 				},
 				// 6: L2
 				{
