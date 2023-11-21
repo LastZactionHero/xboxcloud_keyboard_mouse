@@ -6,7 +6,7 @@ Based on the [TouchStadia](https://chromewebstore.google.com/detail/touchstadia/
 
 ## Key Map
 
-Toggle activation and mouse lock with ] key.
+Toggle activation and mouse lock with `]` key.
 
 It's hard configured for Starfield- update the button map in `emulatedGamepad` to modify:
 
@@ -21,10 +21,10 @@ It's hard configured for Starfield- update the button map in `emulatedGamepad` t
 | P                   | R1                | Grenade                            |
 | Right Mouse Button  | L2                | Aim                                |
 | Left Mouse Button   | R2                | Fire                               |
-| \                   | Select            | Select button                      |
-| Enter               | Start             | Start button                       |
 | Shift               | L3                | Run                                |
 | Middle Mouse Button | R3                | Bash                               |
+| \                   | Select            | Select button                      |
+| Enter               | Start             | Start button                       |
 | I, J, K, L          | D-pad Up, Left, Down, Right | D-pad functions   |
 | H                   | Home              | Home button                        |
 
@@ -34,6 +34,7 @@ It's hard configured for Starfield- update the button map in `emulatedGamepad` t
 
 ## TODOs
 
+- Arrow key dpad
 - Customize buttons from extensions
 - Configurable mouse sensitivity
 - Single Key -> Multi Button support
