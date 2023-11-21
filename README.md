@@ -4,6 +4,11 @@ Chrome extension to play on Xbox Cloud with a mouse/keyboard instead of a joysti
 
 Based on the [TouchStadia](https://chromewebstore.google.com/detail/touchstadia/kdkboloommjpbahkdlhengbghlhcejaj) extension.
 
+## Supported Sites
+
+- https://www.xbox.com
+- https://hardwaretester.com/gamepad
+
 ## Key Map
 
 Toggle activation and mouse lock with `]` key.
