@@ -2,11 +2,11 @@
 
 Chrome extension to play on Xbox Cloud with a mouse/keyboard instead of a joystick.
 
-Toggle activation with `]` key.
-
 Based on the [TouchStadia](https://chromewebstore.google.com/detail/touchstadia/kdkboloommjpbahkdlhengbghlhcejaj) extension.
 
 ## Key Map
+
+Toggle activation and mouse lock with ] key.
 
 It's hard configured for Starfield- update the button map in `emulatedGamepad` to modify:
 
