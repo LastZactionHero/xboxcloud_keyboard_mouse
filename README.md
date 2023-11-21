@@ -31,3 +31,9 @@ It's hard configured for Starfield- update the button map in `emulatedGamepad` t
 ## Installation
 
 [Loading an unpacked extension](https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/#load-unpacked)
+
+## TODOs
+
+- Customize buttons from extensions
+- Configurable mouse sensitivity
+- Single Key -> Multi Button support
