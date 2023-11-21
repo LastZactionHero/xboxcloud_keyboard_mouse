@@ -11,7 +11,6 @@
    "description": "Maps keyboard/mouse to an emulated gamepad",
    "icons": {
    },
-   "key": "/y2gwhTJnp5DHnQ0gR1YizCO4C5DzEY9yWVW6dHtSI/pufIDtzXVVP4Dsi9RhCfhahj2tf+nM6P4095nhH8xTJ/qgyrYzab4UYXqYNz+Qcgz8Yxxqshh2Y9uqjDI5tWIvMs2UM6pMOkdaiBce18kFYCDI1FWaL5GPPnHjOkxeFBStdWO0U9ttKf/j5udmt9gACpL7J8crmayaeOESZqmRkQWM87qJBh0/CM7FzZDxoK0RIcG/0lpswdzuPSZ1x8aTlemXOJRbuttG84XF4WfMv/b+GHZqQIDAQAB",
    "manifest_version": 2,
    "name": "Keyboard/Mouse Emulated Gamepad",
    "page_action": {
